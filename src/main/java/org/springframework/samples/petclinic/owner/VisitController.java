@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import jakarta.validation.Valid;
+import org.springframework.samples.petclinic.system.DisasterRecoveryMode;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
@@ -41,11 +42,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 class VisitController {
 
-	private final OwnerRepository owners;
+        private final OwnerRepository owners;
 
-	public VisitController(OwnerRepository owners) {
-		this.owners = owners;
-	}
+        private final DisasterRecoveryMode disasterRecoveryMode;
+
+        public VisitController(OwnerRepository owners, DisasterRecoveryMode disasterRecoveryMode) {
+                this.owners = owners;
+                this.disasterRecoveryMode = disasterRecoveryMode;
+        }
 
 	@InitBinder
 	public void setAllowedFields(WebDataBinder dataBinder) {
@@ -79,12 +83,16 @@ class VisitController {
 		return visit;
 	}
 
-	// Spring MVC calls method loadPetWithVisit(...) before initNewVisitForm is
-	// called
-	@GetMapping("/owners/{ownerId}/pets/{petId}/visits/new")
-	public String initNewVisitForm() {
-		return "redirect:/read-only";
-	}
+        // Spring MVC calls method loadPetWithVisit(...) before initNewVisitForm is
+        // called
+        @GetMapping("/owners/{ownerId}/pets/{petId}/visits/new")
+        public String initNewVisitForm() {
+                if (this.disasterRecoveryMode.isReadOnly()) {
+                        return "redirect:/read-only";
+                }
+
+                return "pets/createOrUpdateVisitForm";
+        }
 
 	// Spring MVC calls method loadPetWithVisit(...) before processNewVisitForm is
 	// called
