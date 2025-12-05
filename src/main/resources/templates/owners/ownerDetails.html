@@ -68,7 +68,10 @@
             <td th:text="${visit?.description}"></td>
           </tr>
             <tr>
-              <td colspan="2" class="text-muted">펫 수정 및 방문 추가 기능은 임시로 비활성화되었습니다.</td>
+              <td colspan="2" class="text-muted"
+                th:text="#{readonly.ownerDetails.notice}">
+                Pet edit and visit addition are temporarily disabled.
+              </td>
             </tr>
         </table>
       </td>
