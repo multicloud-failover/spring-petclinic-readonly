@@ -16,17 +16,15 @@
 package org.springframework.samples.petclinic.system;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@Conditional(ReadOnlyModeCondition.class)
 class ReadOnlyController {
 
-	@RequestMapping("/read-only")
-	public String showReadOnly(Model model, HttpServletRequest request) {
+        @RequestMapping("/read-only")
+        public String showReadOnly(Model model, HttpServletRequest request) {
 		Object message = request.getAttribute("readOnlyMessage");
 		model.addAttribute("readOnlyMessage", message != null ? message : ReadOnlyModeAdvice.READ_ONLY_MESSAGE);
 		return "readOnly";

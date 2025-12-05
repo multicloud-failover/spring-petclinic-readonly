@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.samples.petclinic.system.ReadOnlyModeAdvice;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,9 +28,10 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.ui.Model;
 
 import jakarta.validation.Valid;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * @author Juergen Hoeller
@@ -41,7 +44,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 class VisitController {
 
-	private final OwnerRepository owners;
+        private static final String READ_ONLY_VIEW = "readOnly";
+
+        private final OwnerRepository owners;
 
 	public VisitController(OwnerRepository owners) {
 		this.owners = owners;
@@ -79,26 +84,22 @@ class VisitController {
 		return visit;
 	}
 
-	// Spring MVC calls method loadPetWithVisit(...) before initNewVisitForm is
-	// called
-	@GetMapping("/owners/{ownerId}/pets/{petId}/visits/new")
-	public String initNewVisitForm() {
-		return "redirect:/read-only";
-	}
+        // Spring MVC calls method loadPetWithVisit(...) before initNewVisitForm is
+        // called
+        @GetMapping("/owners/{ownerId}/pets/{petId}/visits/new")
+        public String initNewVisitForm() {
+                return "pets/createOrUpdateVisitForm";
+        }
 
-	// Spring MVC calls method loadPetWithVisit(...) before processNewVisitForm is
-	// called
-	@PostMapping("/owners/{ownerId}/pets/{petId}/visits/new")
-	public String processNewVisitForm(@ModelAttribute Owner owner, @PathVariable int petId, @Valid Visit visit,
-			BindingResult result, RedirectAttributes redirectAttributes) {
-		if (result.hasErrors()) {
-			return "pets/createOrUpdateVisitForm";
-		}
-
-		owner.addVisit(petId, visit);
-		this.owners.save(owner);
-		redirectAttributes.addFlashAttribute("message", "Your visit has been booked");
-		return "redirect:/owners/{ownerId}";
-	}
+        // Spring MVC calls method loadPetWithVisit(...) before processNewVisitForm is
+        // called
+        @PostMapping("/owners/{ownerId}/pets/{petId}/visits/new")
+        @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+        public String processNewVisitForm(@ModelAttribute Owner owner, @PathVariable int petId, @Valid Visit visit,
+                        BindingResult result, Model model) {
+                // All write paths are disabled; surface the read-only page instead of persisting changes.
+                model.addAttribute("readOnlyMessage", ReadOnlyModeAdvice.READ_ONLY_MESSAGE);
+                return READ_ONLY_VIEW;
+        }
 
 }

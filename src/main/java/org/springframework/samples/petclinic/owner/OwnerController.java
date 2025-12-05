@@ -17,7 +17,6 @@ package org.springframework.samples.petclinic.owner;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
@@ -39,7 +38,9 @@ import org.springframework.web.servlet.ModelAndView;
 import jakarta.validation.Valid;
 import org.jspecify.annotations.Nullable;
 
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.http.HttpStatus;
+import org.springframework.samples.petclinic.system.ReadOnlyModeAdvice;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  * @author Juergen Hoeller
@@ -51,7 +52,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 class OwnerController {
 
-	private static final String VIEWS_OWNER_CREATE_OR_UPDATE_FORM = "owners/createOrUpdateOwnerForm";
+        private static final String VIEWS_OWNER_CREATE_OR_UPDATE_FORM = "owners/createOrUpdateOwnerForm";
+
+        private static final String READ_ONLY_VIEW = "readOnly";
 
 	private static final String DEFAULT_PAGE_SIZE_VALUE = "10";
 
@@ -71,34 +74,30 @@ class OwnerController {
 	}
 
 	@ModelAttribute("owner")
-	public Owner findOwner(@PathVariable(name = "ownerId", required = false) @Nullable Integer ownerId) {
-		return ownerId == null ? new Owner()
-				: this.owners.findById(ownerId)
-					.orElseThrow(() -> new IllegalArgumentException("Owner not found with id: " + ownerId
-							+ ". Please ensure the ID is correct " + "and the owner exists in the database."));
-	}
+        public Owner findOwner(@PathVariable(name = "ownerId", required = false) @Nullable Integer ownerId) {
+                return ownerId == null ? new Owner()
+                                : this.owners.findById(ownerId)
+                                        .orElseThrow(() -> new IllegalArgumentException("Owner not found with id: " + ownerId
+                                                        + ". Please ensure the ID is correct " + "and the owner exists in the database."));
+        }
 
-	@GetMapping("/owners/new")
-	public String initCreationForm() {
-		return "redirect:/read-only";
-	}
+        @GetMapping("/owners/new")
+        public String initCreationForm() {
+                return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
+        }
 
-	@PostMapping("/owners/new")
-	public String processCreationForm(@Valid Owner owner, BindingResult result, RedirectAttributes redirectAttributes) {
-		if (result.hasErrors()) {
-			redirectAttributes.addFlashAttribute("error", "There was an error in creating the owner.");
-			return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
-		}
-
-		this.owners.save(owner);
-		redirectAttributes.addFlashAttribute("message", "New Owner Created");
-		return "redirect:/owners/" + owner.getId();
-	}
+        @PostMapping("/owners/new")
+        @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+        public String processCreationForm(@Valid Owner owner, BindingResult result, Model model) {
+                // Write operations are intentionally disabled in the read-only edition.
+                model.addAttribute("readOnlyMessage", ReadOnlyModeAdvice.READ_ONLY_MESSAGE);
+                return READ_ONLY_VIEW;
+        }
 
 	@GetMapping("/owners/find")
-	public String initFindForm() {
-		return "owners/findOwners";
-	}
+        public String initFindForm() {
+                return "owners/findOwners";
+        }
 
 	@GetMapping("/owners")
 	public String processFindForm(@RequestParam(defaultValue = "1") int page, Owner owner, BindingResult result,
@@ -179,30 +178,19 @@ class OwnerController {
 		return PAGE_SIZE_OPTIONS.contains(requestedSize) ? requestedSize : DEFAULT_PAGE_SIZE;
 	}
 
-	@GetMapping("/owners/{ownerId}/edit")
-	public String initUpdateOwnerForm() {
-		return "redirect:/read-only";
-	}
+        @GetMapping("/owners/{ownerId}/edit")
+        public String initUpdateOwnerForm() {
+                return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
+        }
 
-	@PostMapping("/owners/{ownerId}/edit")
-	public String processUpdateOwnerForm(@Valid Owner owner, BindingResult result, @PathVariable("ownerId") int ownerId,
-			RedirectAttributes redirectAttributes) {
-		if (result.hasErrors()) {
-			redirectAttributes.addFlashAttribute("error", "There was an error in updating the owner.");
-			return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
-		}
-
-		if (!Objects.equals(owner.getId(), ownerId)) {
-			result.rejectValue("id", "mismatch", "The owner ID in the form does not match the URL.");
-			redirectAttributes.addFlashAttribute("error", "Owner ID mismatch. Please try again.");
-			return "redirect:/owners/{ownerId}/edit";
-		}
-
-		owner.setId(ownerId);
-		this.owners.save(owner);
-		redirectAttributes.addFlashAttribute("message", "Owner Values Updated");
-		return "redirect:/owners/{ownerId}";
-	}
+        @PostMapping("/owners/{ownerId}/edit")
+        @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+        public String processUpdateOwnerForm(@Valid Owner owner, BindingResult result, @PathVariable("ownerId") int ownerId,
+                        Model model) {
+                // Write operations are intentionally disabled in the read-only edition.
+                model.addAttribute("readOnlyMessage", ReadOnlyModeAdvice.READ_ONLY_MESSAGE);
+                return READ_ONLY_VIEW;
+        }
 
 	/**
 	 * Custom handler for displaying an owner.
