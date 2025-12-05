@@ -15,10 +15,12 @@
  */
 package org.springframework.samples.petclinic.system;
 
+import org.springframework.context.annotation.Conditional;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 @ControllerAdvice
+@Conditional(ReadOnlyModeCondition.class)
 public class ReadOnlyModeAdvice {
 
 	public static final String READ_ONLY_MESSAGE = "임시 서비스 중입니다. 조속히 문제를 해결하겠습니다.";
