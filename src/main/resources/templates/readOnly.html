@@ -5,10 +5,15 @@
 <body>
 
   <div class="alert alert-warning" role="alert">
-    <span th:text="${readOnlyMessage}">임시 서비스 중입니다. 조속히 문제를 해결하겠습니다.</span>
+    <span th:text="${readOnlyMessage} ?: #{readonly.banner.message}">
+      The system is currently running in read-only DR mode. Some features are temporarily disabled.
+    </span>
   </div>
 
-  <p class="lead">현재는 조회 기능만 이용 가능합니다. 불편을 드려 죄송합니다.</p>
+  <p class="lead"
+     th:text="#{readonly.readOnlyPage.notice}">
+    The system is currently in read-only mode. We apologize for any inconvenience.
+  </p>
 
 </body>
 
