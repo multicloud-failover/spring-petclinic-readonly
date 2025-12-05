@@ -25,17 +25,17 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
 /**
  * Enables beans only when the application runs in disaster recovery read-only mode.
  * <p>
- * Read-only mode becomes active when either the {@code app.read-only} property is set
- * to {@code true} or when the {@code dr} Spring profile is enabled.
+ * Read-only mode becomes active when either the {@code app.read-only} property is set to
+ * {@code true} or when the {@code dr} Spring profile is enabled.
  */
 class ReadOnlyModeCondition implements Condition {
 
-        @Override
-        public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-                Environment environment = context.getEnvironment();
-                boolean readOnlyFlag = environment.getProperty("app.read-only", Boolean.class, Boolean.FALSE);
-                boolean drProfileEnabled = Arrays.asList(environment.getActiveProfiles()).contains("dr");
-                return readOnlyFlag || drProfileEnabled;
-        }
+	@Override
+	public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
+		Environment environment = context.getEnvironment();
+		boolean readOnlyFlag = environment.getProperty("app.read-only", Boolean.class, Boolean.FALSE);
+		boolean drProfileEnabled = Arrays.asList(environment.getActiveProfiles()).contains("dr");
+		return readOnlyFlag || drProfileEnabled;
+	}
 
 }

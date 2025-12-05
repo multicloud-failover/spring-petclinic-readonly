@@ -24,22 +24,22 @@ import org.springframework.stereotype.Component;
  * Represents the current disaster recovery (DR) mode of the application.
  * <p>
  * Read-only mode becomes active if either the {@code dr} profile is enabled or the
- * {@code app.read-only} property is explicitly set to {@code true}. The bean is exposed as
- * {@code drMode} for convenient access from Thymeleaf templates and controllers.
+ * {@code app.read-only} property is explicitly set to {@code true}. The bean is exposed
+ * as {@code drMode} for convenient access from Thymeleaf templates and controllers.
  */
 @Component("drMode")
 public class DisasterRecoveryMode {
 
-        private final boolean readOnly;
+	private final boolean readOnly;
 
-        public DisasterRecoveryMode(Environment environment) {
-                boolean readOnlyFlag = environment.getProperty("app.read-only", Boolean.class, Boolean.FALSE);
-                boolean drProfileEnabled = Arrays.asList(environment.getActiveProfiles()).contains("dr");
-                this.readOnly = readOnlyFlag || drProfileEnabled;
-        }
+	public DisasterRecoveryMode(Environment environment) {
+		boolean readOnlyFlag = environment.getProperty("app.read-only", Boolean.class, Boolean.FALSE);
+		boolean drProfileEnabled = Arrays.asList(environment.getActiveProfiles()).contains("dr");
+		this.readOnly = readOnlyFlag || drProfileEnabled;
+	}
 
-        public boolean isReadOnly() {
-                return this.readOnly;
-        }
+	public boolean isReadOnly() {
+		return this.readOnly;
+	}
 
 }

@@ -58,16 +58,16 @@ class OwnerController {
 
 	private static final int DEFAULT_PAGE_SIZE = Integer.parseInt(DEFAULT_PAGE_SIZE_VALUE);
 
-        private static final List<Integer> PAGE_SIZE_OPTIONS = List.of(DEFAULT_PAGE_SIZE, 20, 30, 40, 50);
+	private static final List<Integer> PAGE_SIZE_OPTIONS = List.of(DEFAULT_PAGE_SIZE, 20, 30, 40, 50);
 
-        private final OwnerRepository owners;
+	private final OwnerRepository owners;
 
-        private final DisasterRecoveryMode disasterRecoveryMode;
+	private final DisasterRecoveryMode disasterRecoveryMode;
 
-        public OwnerController(OwnerRepository owners, DisasterRecoveryMode disasterRecoveryMode) {
-                this.owners = owners;
-                this.disasterRecoveryMode = disasterRecoveryMode;
-        }
+	public OwnerController(OwnerRepository owners, DisasterRecoveryMode disasterRecoveryMode) {
+		this.owners = owners;
+		this.disasterRecoveryMode = disasterRecoveryMode;
+	}
 
 	@InitBinder
 	public void setAllowedFields(WebDataBinder dataBinder) {
@@ -82,14 +82,14 @@ class OwnerController {
 							+ ". Please ensure the ID is correct " + "and the owner exists in the database."));
 	}
 
-        @GetMapping("/owners/new")
-        public String initCreationForm() {
-                if (this.disasterRecoveryMode.isReadOnly()) {
-                        return "redirect:/read-only";
-                }
+	@GetMapping("/owners/new")
+	public String initCreationForm() {
+		if (this.disasterRecoveryMode.isReadOnly()) {
+			return "redirect:/read-only";
+		}
 
-                return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
-        }
+		return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
+	}
 
 	@PostMapping("/owners/new")
 	public String processCreationForm(@Valid Owner owner, BindingResult result, RedirectAttributes redirectAttributes) {
@@ -187,14 +187,14 @@ class OwnerController {
 		return PAGE_SIZE_OPTIONS.contains(requestedSize) ? requestedSize : DEFAULT_PAGE_SIZE;
 	}
 
-        @GetMapping("/owners/{ownerId}/edit")
-        public String initUpdateOwnerForm() {
-                if (this.disasterRecoveryMode.isReadOnly()) {
-                        return "redirect:/read-only";
-                }
+	@GetMapping("/owners/{ownerId}/edit")
+	public String initUpdateOwnerForm() {
+		if (this.disasterRecoveryMode.isReadOnly()) {
+			return "redirect:/read-only";
+		}
 
-                return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
-        }
+		return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
+	}
 
 	@PostMapping("/owners/{ownerId}/edit")
 	public String processUpdateOwnerForm(@Valid Owner owner, BindingResult result, @PathVariable("ownerId") int ownerId,
