@@ -49,14 +49,14 @@ class PetController {
 
 	private static final String VIEWS_PETS_CREATE_OR_UPDATE_FORM = "pets/createOrUpdatePetForm";
 
-        private final OwnerRepository owners;
+	private final OwnerRepository owners;
 
-        private final PetTypeRepository types;
+	private final PetTypeRepository types;
 
-        public PetController(OwnerRepository owners, PetTypeRepository types) {
-                this.owners = owners;
-                this.types = types;
-        }
+	public PetController(OwnerRepository owners, PetTypeRepository types) {
+		this.owners = owners;
+		this.types = types;
+	}
 
 	@ModelAttribute("types")
 	public Collection<PetType> populatePetTypes() {
@@ -96,9 +96,9 @@ class PetController {
 	}
 
 	@GetMapping("/pets/new")
-        public String initCreationForm() {
-                return "redirect:/read-only";
-        }
+	public String initCreationForm() {
+		return "redirect:/read-only";
+	}
 
 	@PostMapping("/pets/new")
 	public String processCreationForm(Owner owner, @Valid Pet pet, BindingResult result,
@@ -123,9 +123,9 @@ class PetController {
 	}
 
 	@GetMapping("/pets/{petId}/edit")
-        public String initUpdateForm() {
-                return "redirect:/read-only";
-        }
+	public String initUpdateForm() {
+		return "redirect:/read-only";
+	}
 
 	@PostMapping("/pets/{petId}/edit")
 	public String processUpdateForm(Owner owner, @Valid Pet pet, BindingResult result,
