@@ -21,7 +21,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
@@ -36,7 +35,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import jakarta.validation.Valid;
 import org.jspecify.annotations.Nullable;
 
-import org.springframework.samples.petclinic.system.DisasterRecoveryMode;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
@@ -51,17 +49,14 @@ class PetController {
 
 	private static final String VIEWS_PETS_CREATE_OR_UPDATE_FORM = "pets/createOrUpdatePetForm";
 
-	private final OwnerRepository owners;
+        private final OwnerRepository owners;
 
-	private final PetTypeRepository types;
+        private final PetTypeRepository types;
 
-	private final DisasterRecoveryMode disasterRecoveryMode;
-
-	public PetController(OwnerRepository owners, PetTypeRepository types, DisasterRecoveryMode disasterRecoveryMode) {
-		this.owners = owners;
-		this.types = types;
-		this.disasterRecoveryMode = disasterRecoveryMode;
-	}
+        public PetController(OwnerRepository owners, PetTypeRepository types) {
+                this.owners = owners;
+                this.types = types;
+        }
 
 	@ModelAttribute("types")
 	public Collection<PetType> populatePetTypes() {
@@ -101,16 +96,9 @@ class PetController {
 	}
 
 	@GetMapping("/pets/new")
-	public String initCreationForm(Owner owner, ModelMap model) {
-		if (this.disasterRecoveryMode.isReadOnly()) {
-			return "redirect:/read-only";
-		}
-
-		Pet pet = new Pet();
-		owner.addPet(pet);
-		model.put("pet", pet);
-		return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
-	}
+        public String initCreationForm() {
+                return "redirect:/read-only";
+        }
 
 	@PostMapping("/pets/new")
 	public String processCreationForm(Owner owner, @Valid Pet pet, BindingResult result,
@@ -135,16 +123,9 @@ class PetController {
 	}
 
 	@GetMapping("/pets/{petId}/edit")
-	public String initUpdateForm(Owner owner, @PathVariable("petId") int petId, ModelMap model) {
-		if (this.disasterRecoveryMode.isReadOnly()) {
-			return "redirect:/read-only";
-		}
-
-		Pet pet = owner.getPet(petId);
-		Assert.state(pet != null, "Pet must not be null");
-		model.put("pet", pet);
-		return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
-	}
+        public String initUpdateForm() {
+                return "redirect:/read-only";
+        }
 
 	@PostMapping("/pets/{petId}/edit")
 	public String processUpdateForm(Owner owner, @Valid Pet pet, BindingResult result,
