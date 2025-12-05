@@ -125,15 +125,15 @@ class PetControllerTests {
 		}
 
 		@Test
-                void testProcessCreationFormWithDuplicateName() throws Exception {
-                        mockMvc
-                                        .perform(post("/owners/{ownerId}/pets/new", TEST_OWNER_ID).param("name", "petty")
-                                                        .param("birthDate", "2015-02-12"))
-                                        .andExpect(status().isServiceUnavailable())
-                                        .andExpect(view().name("readOnly"));
+		void testProcessCreationFormWithDuplicateName() throws Exception {
+			mockMvc
+				.perform(post("/owners/{ownerId}/pets/new", TEST_OWNER_ID).param("name", "petty")
+					.param("birthDate", "2015-02-12"))
+				.andExpect(status().isServiceUnavailable())
+				.andExpect(view().name("readOnly"));
 
-                        verify(owners, never()).save(any(Owner.class));
-                }
+			verify(owners, never()).save(any(Owner.class));
+		}
 
 		@Test
 		void testProcessCreationFormWithMissingPetType() throws Exception {
@@ -155,11 +155,11 @@ class PetControllerTests {
 			LocalDate currentDate = LocalDate.now();
 			String futureBirthDate = currentDate.plusMonths(1).toString();
 
-                        mockMvc
-                                        .perform(post("/owners/{ownerId}/pets/new", TEST_OWNER_ID).param("name", "Betty")
-                                                        .param("birthDate", futureBirthDate))
-                                        .andExpect(status().isServiceUnavailable())
-                                        .andExpect(view().name("readOnly"));
+			mockMvc
+				.perform(post("/owners/{ownerId}/pets/new", TEST_OWNER_ID).param("name", "Betty")
+					.param("birthDate", futureBirthDate))
+				.andExpect(status().isServiceUnavailable())
+				.andExpect(view().name("readOnly"));
 
 			verify(owners, never()).save(any(Owner.class));
 		}
