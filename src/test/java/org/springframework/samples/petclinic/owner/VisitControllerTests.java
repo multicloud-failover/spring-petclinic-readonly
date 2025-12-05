@@ -16,7 +16,10 @@
 
 package org.springframework.samples.petclinic.owner;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -72,23 +75,27 @@ class VisitControllerTests {
 	}
 
 	@Test
-	void testProcessNewVisitFormSuccess() throws Exception {
-		mockMvc
-			.perform(post("/owners/{ownerId}/pets/{petId}/visits/new", TEST_OWNER_ID, TEST_PET_ID)
-				.param("name", "George")
-				.param("description", "Visit Description"))
-			.andExpect(status().is3xxRedirection())
-			.andExpect(view().name("redirect:/owners/{ownerId}"));
-	}
+        void testProcessNewVisitFormSuccess() throws Exception {
+                mockMvc
+                        .perform(post("/owners/{ownerId}/pets/{petId}/visits/new", TEST_OWNER_ID, TEST_PET_ID)
+                                .param("name", "George")
+                                .param("description", "Visit Description"))
+                        .andExpect(status().isServiceUnavailable())
+                        .andExpect(view().name("readOnly"));
 
-	@Test
-	void testProcessNewVisitFormHasErrors() throws Exception {
-		mockMvc
-			.perform(post("/owners/{ownerId}/pets/{petId}/visits/new", TEST_OWNER_ID, TEST_PET_ID).param("name",
-					"George"))
-			.andExpect(model().attributeHasErrors("visit"))
-			.andExpect(status().isOk())
-			.andExpect(view().name("pets/createOrUpdateVisitForm"));
-	}
+                verify(owners, never()).save(any(Owner.class));
+        }
+
+        @Test
+        void testProcessNewVisitFormHasErrors() throws Exception {
+                mockMvc
+                        .perform(post("/owners/{ownerId}/pets/{petId}/visits/new", TEST_OWNER_ID, TEST_PET_ID).param("name",
+                                        "George"))
+                        .andExpect(model().attributeHasErrors("visit"))
+                        .andExpect(status().isServiceUnavailable())
+                        .andExpect(view().name("readOnly"));
+
+                verify(owners, never()).save(any(Owner.class));
+        }
 
 }

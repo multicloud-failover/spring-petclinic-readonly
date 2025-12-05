@@ -15,14 +15,12 @@
  */
 package org.springframework.samples.petclinic.owner;
 
-import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.samples.petclinic.system.ReadOnlyModeAdvice;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,11 +29,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.ui.Model;
 
 import jakarta.validation.Valid;
 import org.jspecify.annotations.Nullable;
-
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * @author Juergen Hoeller
@@ -47,7 +45,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/owners/{ownerId}")
 class PetController {
 
-	private static final String VIEWS_PETS_CREATE_OR_UPDATE_FORM = "pets/createOrUpdatePetForm";
+        private static final String VIEWS_PETS_CREATE_OR_UPDATE_FORM = "pets/createOrUpdatePetForm";
+
+        private static final String READ_ONLY_VIEW = "readOnly";
 
 	private final OwnerRepository owners;
 
@@ -90,90 +90,35 @@ class PetController {
 		dataBinder.setDisallowedFields("id");
 	}
 
-	@InitBinder("pet")
-	public void initPetBinder(WebDataBinder dataBinder) {
-		dataBinder.setValidator(new PetValidator());
-	}
+        @InitBinder("pet")
+        public void initPetBinder(WebDataBinder dataBinder) {
+                dataBinder.setValidator(new PetValidator());
+        }
 
-	@GetMapping("/pets/new")
-	public String initCreationForm() {
-		return "redirect:/read-only";
-	}
+        @GetMapping("/pets/new")
+        public String initCreationForm() {
+                return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
+        }
 
-	@PostMapping("/pets/new")
-	public String processCreationForm(Owner owner, @Valid Pet pet, BindingResult result,
-			RedirectAttributes redirectAttributes) {
+        @PostMapping("/pets/new")
+        @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+        public String processCreationForm(Owner owner, @Valid Pet pet, BindingResult result, Model model) {
+                // All write paths are disabled; surface the read-only page instead of persisting changes.
+                model.addAttribute("readOnlyMessage", ReadOnlyModeAdvice.READ_ONLY_MESSAGE);
+                return READ_ONLY_VIEW;
+        }
 
-		if (StringUtils.hasText(pet.getName()) && pet.isNew() && owner.getPet(pet.getName(), true) != null)
-			result.rejectValue("name", "duplicate", "already exists");
+        @GetMapping("/pets/{petId}/edit")
+        public String initUpdateForm() {
+                return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
+        }
 
-		LocalDate currentDate = LocalDate.now();
-		if (pet.getBirthDate() != null && pet.getBirthDate().isAfter(currentDate)) {
-			result.rejectValue("birthDate", "typeMismatch.birthDate");
-		}
-
-		if (result.hasErrors()) {
-			return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
-		}
-
-		owner.addPet(pet);
-		this.owners.save(owner);
-		redirectAttributes.addFlashAttribute("message", "New Pet has been Added");
-		return "redirect:/owners/{ownerId}";
-	}
-
-	@GetMapping("/pets/{petId}/edit")
-	public String initUpdateForm() {
-		return "redirect:/read-only";
-	}
-
-	@PostMapping("/pets/{petId}/edit")
-	public String processUpdateForm(Owner owner, @Valid Pet pet, BindingResult result,
-			RedirectAttributes redirectAttributes) {
-
-		String petName = pet.getName();
-
-		// checking if the pet name already exists for the owner
-		if (StringUtils.hasText(petName)) {
-			Pet existingPet = owner.getPet(petName, false);
-			if (existingPet != null && !Objects.equals(existingPet.getId(), pet.getId())) {
-				result.rejectValue("name", "duplicate", "already exists");
-			}
-		}
-
-		LocalDate currentDate = LocalDate.now();
-		if (pet.getBirthDate() != null && pet.getBirthDate().isAfter(currentDate)) {
-			result.rejectValue("birthDate", "typeMismatch.birthDate");
-		}
-
-		if (result.hasErrors()) {
-			return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
-		}
-
-		updatePetDetails(owner, pet);
-		redirectAttributes.addFlashAttribute("message", "Pet details has been edited");
-		return "redirect:/owners/{ownerId}";
-	}
-
-	/**
-	 * Updates the pet details if it exists or adds a new pet to the owner.
-	 * @param owner The owner of the pet
-	 * @param pet The pet with updated details
-	 */
-	private void updatePetDetails(Owner owner, Pet pet) {
-		Integer id = pet.getId();
-		Assert.state(id != null, "'pet.getId()' must not be null");
-		Pet existingPet = owner.getPet(id);
-		if (existingPet != null) {
-			// Update existing pet's properties
-			existingPet.setName(pet.getName());
-			existingPet.setBirthDate(pet.getBirthDate());
-			existingPet.setType(pet.getType());
-		}
-		else {
-			owner.addPet(pet);
-		}
-		this.owners.save(owner);
-	}
+        @PostMapping("/pets/{petId}/edit")
+        @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+        public String processUpdateForm(Owner owner, @Valid Pet pet, BindingResult result, Model model) {
+                // All write paths are disabled; surface the read-only page instead of persisting changes.
+                model.addAttribute("readOnlyMessage", ReadOnlyModeAdvice.READ_ONLY_MESSAGE);
+                return READ_ONLY_VIEW;
+        }
 
 }
