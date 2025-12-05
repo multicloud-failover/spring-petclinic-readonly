@@ -79,12 +79,12 @@ class VisitController {
 		return visit;
 	}
 
-        // Spring MVC calls method loadPetWithVisit(...) before initNewVisitForm is
-        // called
-        @GetMapping("/owners/{ownerId}/pets/{petId}/visits/new")
-        public String initNewVisitForm() {
-                return "redirect:/read-only";
-        }
+	// Spring MVC calls method loadPetWithVisit(...) before initNewVisitForm is
+	// called
+	@GetMapping("/owners/{ownerId}/pets/{petId}/visits/new")
+	public String initNewVisitForm() {
+		return "redirect:/read-only";
+	}
 
 	// Spring MVC calls method loadPetWithVisit(...) before processNewVisitForm is
 	// called

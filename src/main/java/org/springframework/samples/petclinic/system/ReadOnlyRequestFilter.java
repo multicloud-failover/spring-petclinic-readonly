@@ -29,19 +29,20 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Component
 public class ReadOnlyRequestFilter extends OncePerRequestFilter {
 
-        private static final Set<String> ALLOWED_METHODS = Set.of("GET", "HEAD", "OPTIONS");
+	private static final Set<String> ALLOWED_METHODS = Set.of("GET", "HEAD", "OPTIONS");
 
-        @Override
-        protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-                        throws ServletException, IOException {
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+			throws ServletException, IOException {
 
-                if (!ALLOWED_METHODS.contains(request.getMethod())) {
-                        response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
-                        request.setAttribute("readOnlyMessage", ReadOnlyModeAdvice.READ_ONLY_MESSAGE);
-                        request.getRequestDispatcher("/read-only").forward(request, response);
-                        return;
-                }
+		if (!ALLOWED_METHODS.contains(request.getMethod())) {
+			response.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
+			request.setAttribute("readOnlyMessage", ReadOnlyModeAdvice.READ_ONLY_MESSAGE);
+			request.getRequestDispatcher("/read-only").forward(request, response);
+			return;
+		}
 
-                filterChain.doFilter(request, response);
-        }
+		filterChain.doFilter(request, response);
+	}
+
 }

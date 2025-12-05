@@ -96,10 +96,10 @@ class PetController {
 		dataBinder.setValidator(new PetValidator());
 	}
 
-        @GetMapping("/pets/new")
-        public String initCreationForm(Owner owner, ModelMap model) {
-                return "redirect:/read-only";
-        }
+	@GetMapping("/pets/new")
+	public String initCreationForm(Owner owner, ModelMap model) {
+		return "redirect:/read-only";
+	}
 
 	@PostMapping("/pets/new")
 	public String processCreationForm(Owner owner, @Valid Pet pet, BindingResult result,
@@ -123,10 +123,10 @@ class PetController {
 		return "redirect:/owners/{ownerId}";
 	}
 
-        @GetMapping("/pets/{petId}/edit")
-        public String initUpdateForm() {
-                return "redirect:/read-only";
-        }
+	@GetMapping("/pets/{petId}/edit")
+	public String initUpdateForm() {
+		return "redirect:/read-only";
+	}
 
 	@PostMapping("/pets/{petId}/edit")
 	public String processUpdateForm(Owner owner, @Valid Pet pet, BindingResult result,

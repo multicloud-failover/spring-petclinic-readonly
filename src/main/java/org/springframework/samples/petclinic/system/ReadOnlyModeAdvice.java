@@ -21,11 +21,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 @ControllerAdvice
 public class ReadOnlyModeAdvice {
 
-        public static final String READ_ONLY_MESSAGE = "임시 서비스 중입니다. 조속히 문제를 해결하겠습니다.";
+	public static final String READ_ONLY_MESSAGE = "임시 서비스 중입니다. 조속히 문제를 해결하겠습니다.";
 
-        @ModelAttribute("readOnlyBannerMessage")
-        public String readOnlyBannerMessage() {
-                return READ_ONLY_MESSAGE;
-        }
+	@ModelAttribute("readOnlyBannerMessage")
+	public String readOnlyBannerMessage() {
+		return READ_ONLY_MESSAGE;
+	}
 
 }
