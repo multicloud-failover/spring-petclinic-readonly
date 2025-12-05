@@ -78,10 +78,10 @@ class OwnerController {
 							+ ". Please ensure the ID is correct " + "and the owner exists in the database."));
 	}
 
-	@GetMapping("/owners/new")
-	public String initCreationForm() {
-		return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
-	}
+        @GetMapping("/owners/new")
+        public String initCreationForm() {
+                return "redirect:/read-only";
+        }
 
 	@PostMapping("/owners/new")
 	public String processCreationForm(@Valid Owner owner, BindingResult result, RedirectAttributes redirectAttributes) {
@@ -179,10 +179,10 @@ class OwnerController {
 		return PAGE_SIZE_OPTIONS.contains(requestedSize) ? requestedSize : DEFAULT_PAGE_SIZE;
 	}
 
-	@GetMapping("/owners/{ownerId}/edit")
-	public String initUpdateOwnerForm() {
-		return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
-	}
+        @GetMapping("/owners/{ownerId}/edit")
+        public String initUpdateOwnerForm() {
+                return "redirect:/read-only";
+        }
 
 	@PostMapping("/owners/{ownerId}/edit")
 	public String processUpdateOwnerForm(@Valid Owner owner, BindingResult result, @PathVariable("ownerId") int ownerId,
