@@ -52,9 +52,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Controller
 class OwnerController {
 
-        private static final String VIEWS_OWNER_CREATE_OR_UPDATE_FORM = "owners/createOrUpdateOwnerForm";
+	private static final String VIEWS_OWNER_CREATE_OR_UPDATE_FORM = "owners/createOrUpdateOwnerForm";
 
-        private static final String READ_ONLY_VIEW = "readOnly";
+	private static final String READ_ONLY_VIEW = "readOnly";
 
 	private static final String DEFAULT_PAGE_SIZE_VALUE = "10";
 
@@ -74,30 +74,30 @@ class OwnerController {
 	}
 
 	@ModelAttribute("owner")
-        public Owner findOwner(@PathVariable(name = "ownerId", required = false) @Nullable Integer ownerId) {
-                return ownerId == null ? new Owner()
-                                : this.owners.findById(ownerId)
-                                        .orElseThrow(() -> new IllegalArgumentException("Owner not found with id: " + ownerId
-                                                        + ". Please ensure the ID is correct " + "and the owner exists in the database."));
-        }
+	public Owner findOwner(@PathVariable(name = "ownerId", required = false) @Nullable Integer ownerId) {
+		return ownerId == null ? new Owner()
+				: this.owners.findById(ownerId)
+					.orElseThrow(() -> new IllegalArgumentException("Owner not found with id: " + ownerId
+							+ ". Please ensure the ID is correct " + "and the owner exists in the database."));
+	}
 
-        @GetMapping("/owners/new")
-        public String initCreationForm() {
-                return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
-        }
+	@GetMapping("/owners/new")
+	public String initCreationForm() {
+		return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
+	}
 
-        @PostMapping("/owners/new")
-        @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
-        public String processCreationForm(@Valid Owner owner, BindingResult result, Model model) {
-                // Write operations are intentionally disabled in the read-only edition.
-                model.addAttribute("readOnlyMessage", ReadOnlyModeAdvice.READ_ONLY_MESSAGE);
-                return READ_ONLY_VIEW;
-        }
+	@PostMapping("/owners/new")
+	@ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+	public String processCreationForm(@Valid Owner owner, BindingResult result, Model model) {
+		// Write operations are intentionally disabled in the read-only edition.
+		model.addAttribute("readOnlyMessage", ReadOnlyModeAdvice.READ_ONLY_MESSAGE);
+		return READ_ONLY_VIEW;
+	}
 
 	@GetMapping("/owners/find")
-        public String initFindForm() {
-                return "owners/findOwners";
-        }
+	public String initFindForm() {
+		return "owners/findOwners";
+	}
 
 	@GetMapping("/owners")
 	public String processFindForm(@RequestParam(defaultValue = "1") int page, Owner owner, BindingResult result,
@@ -178,19 +178,19 @@ class OwnerController {
 		return PAGE_SIZE_OPTIONS.contains(requestedSize) ? requestedSize : DEFAULT_PAGE_SIZE;
 	}
 
-        @GetMapping("/owners/{ownerId}/edit")
-        public String initUpdateOwnerForm() {
-                return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
-        }
+	@GetMapping("/owners/{ownerId}/edit")
+	public String initUpdateOwnerForm() {
+		return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
+	}
 
-        @PostMapping("/owners/{ownerId}/edit")
-        @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
-        public String processUpdateOwnerForm(@Valid Owner owner, BindingResult result, @PathVariable("ownerId") int ownerId,
-                        Model model) {
-                // Write operations are intentionally disabled in the read-only edition.
-                model.addAttribute("readOnlyMessage", ReadOnlyModeAdvice.READ_ONLY_MESSAGE);
-                return READ_ONLY_VIEW;
-        }
+	@PostMapping("/owners/{ownerId}/edit")
+	@ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+	public String processUpdateOwnerForm(@Valid Owner owner, BindingResult result, @PathVariable("ownerId") int ownerId,
+			Model model) {
+		// Write operations are intentionally disabled in the read-only edition.
+		model.addAttribute("readOnlyMessage", ReadOnlyModeAdvice.READ_ONLY_MESSAGE);
+		return READ_ONLY_VIEW;
+	}
 
 	/**
 	 * Custom handler for displaying an owner.

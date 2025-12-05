@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 class ReadOnlyController {
 
-        @RequestMapping("/read-only")
-        public String showReadOnly(Model model, HttpServletRequest request) {
+	@RequestMapping("/read-only")
+	public String showReadOnly(Model model, HttpServletRequest request) {
 		Object message = request.getAttribute("readOnlyMessage");
 		model.addAttribute("readOnlyMessage", message != null ? message : ReadOnlyModeAdvice.READ_ONLY_MESSAGE);
 		return "readOnly";

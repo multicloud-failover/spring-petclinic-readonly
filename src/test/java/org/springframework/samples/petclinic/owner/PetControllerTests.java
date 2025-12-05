@@ -95,16 +95,16 @@ class PetControllerTests {
 	}
 
 	@Test
-        void testProcessCreationFormSuccess() throws Exception {
-                mockMvc
-                        .perform(post("/owners/{ownerId}/pets/new", TEST_OWNER_ID).param("name", "Betty")
-                                .param("type", "hamster")
-                                .param("birthDate", "2015-02-12"))
-                        .andExpect(status().isServiceUnavailable())
-                        .andExpect(view().name("readOnly"));
+	void testProcessCreationFormSuccess() throws Exception {
+		mockMvc
+			.perform(post("/owners/{ownerId}/pets/new", TEST_OWNER_ID).param("name", "Betty")
+				.param("type", "hamster")
+				.param("birthDate", "2015-02-12"))
+			.andExpect(status().isServiceUnavailable())
+			.andExpect(view().name("readOnly"));
 
-                verify(owners, never()).save(any(Owner.class));
-        }
+		verify(owners, never()).save(any(Owner.class));
+	}
 
 	@Nested
 	class ProcessCreationFormHasErrors {
@@ -112,47 +112,47 @@ class PetControllerTests {
 		@Test
 		void testProcessCreationFormWithBlankName() throws Exception {
 			mockMvc
-                                .perform(post("/owners/{ownerId}/pets/new", TEST_OWNER_ID).param("name", "\t \n")
-                                        .param("birthDate", "2015-02-12"))
-                                .andExpect(model().attributeHasNoErrors("owner"))
-                                .andExpect(model().attributeHasErrors("pet"))
-                                .andExpect(model().attributeHasFieldErrors("pet", "name"))
-                                .andExpect(model().attributeHasFieldErrorCode("pet", "name", "required"))
-                                .andExpect(status().isServiceUnavailable())
-                                .andExpect(view().name("readOnly"));
+				.perform(post("/owners/{ownerId}/pets/new", TEST_OWNER_ID).param("name", "\t \n")
+					.param("birthDate", "2015-02-12"))
+				.andExpect(model().attributeHasNoErrors("owner"))
+				.andExpect(model().attributeHasErrors("pet"))
+				.andExpect(model().attributeHasFieldErrors("pet", "name"))
+				.andExpect(model().attributeHasFieldErrorCode("pet", "name", "required"))
+				.andExpect(status().isServiceUnavailable())
+				.andExpect(view().name("readOnly"));
 
-                        verify(owners, never()).save(any(Owner.class));
-                }
+			verify(owners, never()).save(any(Owner.class));
+		}
 
 		@Test
 		void testProcessCreationFormWithDuplicateName() throws Exception {
 			mockMvc
-                                .perform(post("/owners/{ownerId}/pets/new", TEST_OWNER_ID).param("name", "petty")
-                                        .param("birthDate", "2015-02-12"))
-                                .andExpect(model().attributeHasNoErrors("owner"))
-                                .andExpect(model().attributeHasErrors("pet"))
-                                .andExpect(model().attributeHasFieldErrors("pet", "name"))
-                                .andExpect(model().attributeHasFieldErrorCode("pet", "name", "duplicate"))
-                                .andExpect(status().isServiceUnavailable())
-                                .andExpect(view().name("readOnly"));
+				.perform(post("/owners/{ownerId}/pets/new", TEST_OWNER_ID).param("name", "petty")
+					.param("birthDate", "2015-02-12"))
+				.andExpect(model().attributeHasNoErrors("owner"))
+				.andExpect(model().attributeHasErrors("pet"))
+				.andExpect(model().attributeHasFieldErrors("pet", "name"))
+				.andExpect(model().attributeHasFieldErrorCode("pet", "name", "duplicate"))
+				.andExpect(status().isServiceUnavailable())
+				.andExpect(view().name("readOnly"));
 
-                        verify(owners, never()).save(any(Owner.class));
-                }
+			verify(owners, never()).save(any(Owner.class));
+		}
 
 		@Test
 		void testProcessCreationFormWithMissingPetType() throws Exception {
 			mockMvc
-                                .perform(post("/owners/{ownerId}/pets/new", TEST_OWNER_ID).param("name", "Betty")
-                                        .param("birthDate", "2015-02-12"))
-                                .andExpect(model().attributeHasNoErrors("owner"))
-                                .andExpect(model().attributeHasErrors("pet"))
-                                .andExpect(model().attributeHasFieldErrors("pet", "type"))
-                                .andExpect(model().attributeHasFieldErrorCode("pet", "type", "required"))
-                                .andExpect(status().isServiceUnavailable())
-                                .andExpect(view().name("readOnly"));
+				.perform(post("/owners/{ownerId}/pets/new", TEST_OWNER_ID).param("name", "Betty")
+					.param("birthDate", "2015-02-12"))
+				.andExpect(model().attributeHasNoErrors("owner"))
+				.andExpect(model().attributeHasErrors("pet"))
+				.andExpect(model().attributeHasFieldErrors("pet", "type"))
+				.andExpect(model().attributeHasFieldErrorCode("pet", "type", "required"))
+				.andExpect(status().isServiceUnavailable())
+				.andExpect(view().name("readOnly"));
 
-                        verify(owners, never()).save(any(Owner.class));
-                }
+			verify(owners, never()).save(any(Owner.class));
+		}
 
 		@Test
 		void testProcessCreationFormWithInvalidBirthDate() throws Exception {
@@ -160,17 +160,17 @@ class PetControllerTests {
 			String futureBirthDate = currentDate.plusMonths(1).toString();
 
 			mockMvc
-                                .perform(post("/owners/{ownerId}/pets/new", TEST_OWNER_ID).param("name", "Betty")
-                                        .param("birthDate", futureBirthDate))
-                                .andExpect(model().attributeHasNoErrors("owner"))
-                                .andExpect(model().attributeHasErrors("pet"))
-                                .andExpect(model().attributeHasFieldErrors("pet", "birthDate"))
-                                .andExpect(model().attributeHasFieldErrorCode("pet", "birthDate", "typeMismatch.birthDate"))
-                                .andExpect(status().isServiceUnavailable())
-                                .andExpect(view().name("readOnly"));
+				.perform(post("/owners/{ownerId}/pets/new", TEST_OWNER_ID).param("name", "Betty")
+					.param("birthDate", futureBirthDate))
+				.andExpect(model().attributeHasNoErrors("owner"))
+				.andExpect(model().attributeHasErrors("pet"))
+				.andExpect(model().attributeHasFieldErrors("pet", "birthDate"))
+				.andExpect(model().attributeHasFieldErrorCode("pet", "birthDate", "typeMismatch.birthDate"))
+				.andExpect(status().isServiceUnavailable())
+				.andExpect(view().name("readOnly"));
 
-                        verify(owners, never()).save(any(Owner.class));
-                }
+			verify(owners, never()).save(any(Owner.class));
+		}
 
 		@Test
 		void testInitUpdateForm() throws Exception {
@@ -183,16 +183,16 @@ class PetControllerTests {
 	}
 
 	@Test
-        void testProcessUpdateFormSuccess() throws Exception {
-                mockMvc
-                        .perform(post("/owners/{ownerId}/pets/{petId}/edit", TEST_OWNER_ID, TEST_PET_ID).param("name", "Betty")
-                                .param("type", "hamster")
-                                .param("birthDate", "2015-02-12"))
-                        .andExpect(status().isServiceUnavailable())
-                        .andExpect(view().name("readOnly"));
+	void testProcessUpdateFormSuccess() throws Exception {
+		mockMvc
+			.perform(post("/owners/{ownerId}/pets/{petId}/edit", TEST_OWNER_ID, TEST_PET_ID).param("name", "Betty")
+				.param("type", "hamster")
+				.param("birthDate", "2015-02-12"))
+			.andExpect(status().isServiceUnavailable())
+			.andExpect(view().name("readOnly"));
 
-                verify(owners, never()).save(any(Owner.class));
-        }
+		verify(owners, never()).save(any(Owner.class));
+	}
 
 	@Nested
 	class ProcessUpdateFormHasErrors {
@@ -200,32 +200,32 @@ class PetControllerTests {
 		@Test
 		void testProcessUpdateFormWithInvalidBirthDate() throws Exception {
 			mockMvc
-                                .perform(post("/owners/{ownerId}/pets/{petId}/edit", TEST_OWNER_ID, TEST_PET_ID).param("name", " ")
-                                        .param("birthDate", "2015/02/12"))
-                                .andExpect(model().attributeHasNoErrors("owner"))
-                                .andExpect(model().attributeHasErrors("pet"))
-                                .andExpect(model().attributeHasFieldErrors("pet", "birthDate"))
-                                .andExpect(model().attributeHasFieldErrorCode("pet", "birthDate", "typeMismatch"))
-                                .andExpect(status().isServiceUnavailable())
-                                .andExpect(view().name("readOnly"));
+				.perform(post("/owners/{ownerId}/pets/{petId}/edit", TEST_OWNER_ID, TEST_PET_ID).param("name", " ")
+					.param("birthDate", "2015/02/12"))
+				.andExpect(model().attributeHasNoErrors("owner"))
+				.andExpect(model().attributeHasErrors("pet"))
+				.andExpect(model().attributeHasFieldErrors("pet", "birthDate"))
+				.andExpect(model().attributeHasFieldErrorCode("pet", "birthDate", "typeMismatch"))
+				.andExpect(status().isServiceUnavailable())
+				.andExpect(view().name("readOnly"));
 
-                        verify(owners, never()).save(any(Owner.class));
-                }
+			verify(owners, never()).save(any(Owner.class));
+		}
 
 		@Test
 		void testProcessUpdateFormWithBlankName() throws Exception {
 			mockMvc
-                                .perform(post("/owners/{ownerId}/pets/{petId}/edit", TEST_OWNER_ID, TEST_PET_ID).param("name", "  ")
-                                        .param("birthDate", "2015-02-12"))
-                                .andExpect(model().attributeHasNoErrors("owner"))
-                                .andExpect(model().attributeHasErrors("pet"))
-                                .andExpect(model().attributeHasFieldErrors("pet", "name"))
-                                .andExpect(model().attributeHasFieldErrorCode("pet", "name", "required"))
-                                .andExpect(status().isServiceUnavailable())
-                                .andExpect(view().name("readOnly"));
+				.perform(post("/owners/{ownerId}/pets/{petId}/edit", TEST_OWNER_ID, TEST_PET_ID).param("name", "  ")
+					.param("birthDate", "2015-02-12"))
+				.andExpect(model().attributeHasNoErrors("owner"))
+				.andExpect(model().attributeHasErrors("pet"))
+				.andExpect(model().attributeHasFieldErrors("pet", "name"))
+				.andExpect(model().attributeHasFieldErrorCode("pet", "name", "required"))
+				.andExpect(status().isServiceUnavailable())
+				.andExpect(view().name("readOnly"));
 
-                        verify(owners, never()).save(any(Owner.class));
-                }
+			verify(owners, never()).save(any(Owner.class));
+		}
 
 	}
 

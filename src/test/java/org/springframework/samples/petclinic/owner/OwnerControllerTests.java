@@ -112,31 +112,31 @@ class OwnerControllerTests {
 	}
 
 	@Test
-        void testProcessCreationFormSuccess() throws Exception {
-                mockMvc
-                        .perform(post("/owners/new").param("firstName", "Joe")
-                                .param("lastName", "Bloggs")
-                                .param("address", "123 Caramel Street")
-                                .param("city", "London")
-                                .param("telephone", "1316761638"))
-                        .andExpect(status().isServiceUnavailable())
-                        .andExpect(view().name("readOnly"));
+	void testProcessCreationFormSuccess() throws Exception {
+		mockMvc
+			.perform(post("/owners/new").param("firstName", "Joe")
+				.param("lastName", "Bloggs")
+				.param("address", "123 Caramel Street")
+				.param("city", "London")
+				.param("telephone", "1316761638"))
+			.andExpect(status().isServiceUnavailable())
+			.andExpect(view().name("readOnly"));
 
-                verify(owners, never()).save(any(Owner.class));
-        }
+		verify(owners, never()).save(any(Owner.class));
+	}
 
-        @Test
-        void testProcessCreationFormHasErrors() throws Exception {
-                mockMvc
-                        .perform(post("/owners/new").param("firstName", "Joe").param("lastName", "Bloggs").param("city", "London"))
-                        .andExpect(status().isServiceUnavailable())
-                        .andExpect(model().attributeHasErrors("owner"))
-                        .andExpect(model().attributeHasFieldErrors("owner", "address"))
-                        .andExpect(model().attributeHasFieldErrors("owner", "telephone"))
-                        .andExpect(view().name("readOnly"));
+	@Test
+	void testProcessCreationFormHasErrors() throws Exception {
+		mockMvc
+			.perform(post("/owners/new").param("firstName", "Joe").param("lastName", "Bloggs").param("city", "London"))
+			.andExpect(status().isServiceUnavailable())
+			.andExpect(model().attributeHasErrors("owner"))
+			.andExpect(model().attributeHasFieldErrors("owner", "address"))
+			.andExpect(model().attributeHasFieldErrors("owner", "telephone"))
+			.andExpect(view().name("readOnly"));
 
-                verify(owners, never()).save(any(Owner.class));
-        }
+		verify(owners, never()).save(any(Owner.class));
+	}
 
 	@Test
 	void testInitFindForm() throws Exception {
@@ -188,43 +188,43 @@ class OwnerControllerTests {
 	}
 
 	@Test
-        void testProcessUpdateOwnerFormSuccess() throws Exception {
-                mockMvc
-                        .perform(post("/owners/{ownerId}/edit", TEST_OWNER_ID).param("firstName", "Joe")
-                                .param("lastName", "Bloggs")
-                                .param("address", "123 Caramel Street")
-                                .param("city", "London")
-                                .param("telephone", "1616291589"))
-                        .andExpect(status().isServiceUnavailable())
-                        .andExpect(view().name("readOnly"));
+	void testProcessUpdateOwnerFormSuccess() throws Exception {
+		mockMvc
+			.perform(post("/owners/{ownerId}/edit", TEST_OWNER_ID).param("firstName", "Joe")
+				.param("lastName", "Bloggs")
+				.param("address", "123 Caramel Street")
+				.param("city", "London")
+				.param("telephone", "1616291589"))
+			.andExpect(status().isServiceUnavailable())
+			.andExpect(view().name("readOnly"));
 
-                verify(owners, never()).save(any(Owner.class));
-        }
-
-        @Test
-        void testProcessUpdateOwnerFormUnchangedSuccess() throws Exception {
-                mockMvc.perform(post("/owners/{ownerId}/edit", TEST_OWNER_ID))
-                        .andExpect(status().isServiceUnavailable())
-                        .andExpect(view().name("readOnly"));
-
-                verify(owners, never()).save(any(Owner.class));
-        }
+		verify(owners, never()).save(any(Owner.class));
+	}
 
 	@Test
-        void testProcessUpdateOwnerFormHasErrors() throws Exception {
-                mockMvc
-                        .perform(post("/owners/{ownerId}/edit", TEST_OWNER_ID).param("firstName", "Joe")
-                                .param("lastName", "Bloggs")
-                                .param("address", "")
-                                .param("telephone", ""))
-                        .andExpect(status().isServiceUnavailable())
-                        .andExpect(model().attributeHasErrors("owner"))
-                        .andExpect(model().attributeHasFieldErrors("owner", "address"))
-                        .andExpect(model().attributeHasFieldErrors("owner", "telephone"))
-                        .andExpect(view().name("readOnly"));
+	void testProcessUpdateOwnerFormUnchangedSuccess() throws Exception {
+		mockMvc.perform(post("/owners/{ownerId}/edit", TEST_OWNER_ID))
+			.andExpect(status().isServiceUnavailable())
+			.andExpect(view().name("readOnly"));
 
-                verify(owners, never()).save(any(Owner.class));
-        }
+		verify(owners, never()).save(any(Owner.class));
+	}
+
+	@Test
+	void testProcessUpdateOwnerFormHasErrors() throws Exception {
+		mockMvc
+			.perform(post("/owners/{ownerId}/edit", TEST_OWNER_ID).param("firstName", "Joe")
+				.param("lastName", "Bloggs")
+				.param("address", "")
+				.param("telephone", ""))
+			.andExpect(status().isServiceUnavailable())
+			.andExpect(model().attributeHasErrors("owner"))
+			.andExpect(model().attributeHasFieldErrors("owner", "address"))
+			.andExpect(model().attributeHasFieldErrors("owner", "telephone"))
+			.andExpect(view().name("readOnly"));
+
+		verify(owners, never()).save(any(Owner.class));
+	}
 
 	@Test
 	void testShowOwner() throws Exception {
@@ -253,13 +253,13 @@ class OwnerControllerTests {
 		owner.setCity("New York");
 		owner.setTelephone("0123456789");
 
-                when(owners.findById(pathOwnerId)).thenReturn(Optional.of(owner));
+		when(owners.findById(pathOwnerId)).thenReturn(Optional.of(owner));
 
-                mockMvc.perform(MockMvcRequestBuilders.post("/owners/{ownerId}/edit", pathOwnerId).flashAttr("owner", owner))
-                        .andExpect(status().isServiceUnavailable())
-                        .andExpect(view().name("readOnly"));
+		mockMvc.perform(MockMvcRequestBuilders.post("/owners/{ownerId}/edit", pathOwnerId).flashAttr("owner", owner))
+			.andExpect(status().isServiceUnavailable())
+			.andExpect(view().name("readOnly"));
 
-                verify(owners, never()).save(any(Owner.class));
-        }
+		verify(owners, never()).save(any(Owner.class));
+	}
 
 }

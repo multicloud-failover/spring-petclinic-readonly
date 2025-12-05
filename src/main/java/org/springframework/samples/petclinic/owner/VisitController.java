@@ -44,9 +44,9 @@ import jakarta.validation.Valid;
 @Controller
 class VisitController {
 
-        private static final String READ_ONLY_VIEW = "readOnly";
+	private static final String READ_ONLY_VIEW = "readOnly";
 
-        private final OwnerRepository owners;
+	private final OwnerRepository owners;
 
 	public VisitController(OwnerRepository owners) {
 		this.owners = owners;
@@ -84,22 +84,23 @@ class VisitController {
 		return visit;
 	}
 
-        // Spring MVC calls method loadPetWithVisit(...) before initNewVisitForm is
-        // called
-        @GetMapping("/owners/{ownerId}/pets/{petId}/visits/new")
-        public String initNewVisitForm() {
-                return "pets/createOrUpdateVisitForm";
-        }
+	// Spring MVC calls method loadPetWithVisit(...) before initNewVisitForm is
+	// called
+	@GetMapping("/owners/{ownerId}/pets/{petId}/visits/new")
+	public String initNewVisitForm() {
+		return "pets/createOrUpdateVisitForm";
+	}
 
-        // Spring MVC calls method loadPetWithVisit(...) before processNewVisitForm is
-        // called
-        @PostMapping("/owners/{ownerId}/pets/{petId}/visits/new")
-        @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
-        public String processNewVisitForm(@ModelAttribute Owner owner, @PathVariable int petId, @Valid Visit visit,
-                        BindingResult result, Model model) {
-                // All write paths are disabled; surface the read-only page instead of persisting changes.
-                model.addAttribute("readOnlyMessage", ReadOnlyModeAdvice.READ_ONLY_MESSAGE);
-                return READ_ONLY_VIEW;
-        }
+	// Spring MVC calls method loadPetWithVisit(...) before processNewVisitForm is
+	// called
+	@PostMapping("/owners/{ownerId}/pets/{petId}/visits/new")
+	@ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+	public String processNewVisitForm(@ModelAttribute Owner owner, @PathVariable int petId, @Valid Visit visit,
+			BindingResult result, Model model) {
+		// All write paths are disabled; surface the read-only page instead of persisting
+		// changes.
+		model.addAttribute("readOnlyMessage", ReadOnlyModeAdvice.READ_ONLY_MESSAGE);
+		return READ_ONLY_VIEW;
+	}
 
 }

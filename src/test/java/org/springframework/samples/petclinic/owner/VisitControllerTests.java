@@ -75,27 +75,27 @@ class VisitControllerTests {
 	}
 
 	@Test
-        void testProcessNewVisitFormSuccess() throws Exception {
-                mockMvc
-                        .perform(post("/owners/{ownerId}/pets/{petId}/visits/new", TEST_OWNER_ID, TEST_PET_ID)
-                                .param("name", "George")
-                                .param("description", "Visit Description"))
-                        .andExpect(status().isServiceUnavailable())
-                        .andExpect(view().name("readOnly"));
+	void testProcessNewVisitFormSuccess() throws Exception {
+		mockMvc
+			.perform(post("/owners/{ownerId}/pets/{petId}/visits/new", TEST_OWNER_ID, TEST_PET_ID)
+				.param("name", "George")
+				.param("description", "Visit Description"))
+			.andExpect(status().isServiceUnavailable())
+			.andExpect(view().name("readOnly"));
 
-                verify(owners, never()).save(any(Owner.class));
-        }
+		verify(owners, never()).save(any(Owner.class));
+	}
 
-        @Test
-        void testProcessNewVisitFormHasErrors() throws Exception {
-                mockMvc
-                        .perform(post("/owners/{ownerId}/pets/{petId}/visits/new", TEST_OWNER_ID, TEST_PET_ID).param("name",
-                                        "George"))
-                        .andExpect(model().attributeHasErrors("visit"))
-                        .andExpect(status().isServiceUnavailable())
-                        .andExpect(view().name("readOnly"));
+	@Test
+	void testProcessNewVisitFormHasErrors() throws Exception {
+		mockMvc
+			.perform(post("/owners/{ownerId}/pets/{petId}/visits/new", TEST_OWNER_ID, TEST_PET_ID).param("name",
+					"George"))
+			.andExpect(model().attributeHasErrors("visit"))
+			.andExpect(status().isServiceUnavailable())
+			.andExpect(view().name("readOnly"));
 
-                verify(owners, never()).save(any(Owner.class));
-        }
+		verify(owners, never()).save(any(Owner.class));
+	}
 
 }

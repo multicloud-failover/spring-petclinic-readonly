@@ -23,9 +23,9 @@ public class ReadOnlyModeAdvice {
 
 	public static final String READ_ONLY_MESSAGE = "The system is currently running in read-only DR mode. Some features are temporarily disabled.";
 
-        @ModelAttribute("appReadOnly")
-        public boolean appReadOnly() {
-                return true;
-        }
+	@ModelAttribute("appReadOnly")
+	public boolean appReadOnly() {
+		return true;
+	}
 
 }

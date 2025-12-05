@@ -45,9 +45,9 @@ import org.jspecify.annotations.Nullable;
 @RequestMapping("/owners/{ownerId}")
 class PetController {
 
-        private static final String VIEWS_PETS_CREATE_OR_UPDATE_FORM = "pets/createOrUpdatePetForm";
+	private static final String VIEWS_PETS_CREATE_OR_UPDATE_FORM = "pets/createOrUpdatePetForm";
 
-        private static final String READ_ONLY_VIEW = "readOnly";
+	private static final String READ_ONLY_VIEW = "readOnly";
 
 	private final OwnerRepository owners;
 
@@ -90,35 +90,37 @@ class PetController {
 		dataBinder.setDisallowedFields("id");
 	}
 
-        @InitBinder("pet")
-        public void initPetBinder(WebDataBinder dataBinder) {
-                dataBinder.setValidator(new PetValidator());
-        }
+	@InitBinder("pet")
+	public void initPetBinder(WebDataBinder dataBinder) {
+		dataBinder.setValidator(new PetValidator());
+	}
 
-        @GetMapping("/pets/new")
-        public String initCreationForm() {
-                return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
-        }
+	@GetMapping("/pets/new")
+	public String initCreationForm() {
+		return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
+	}
 
-        @PostMapping("/pets/new")
-        @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
-        public String processCreationForm(Owner owner, @Valid Pet pet, BindingResult result, Model model) {
-                // All write paths are disabled; surface the read-only page instead of persisting changes.
-                model.addAttribute("readOnlyMessage", ReadOnlyModeAdvice.READ_ONLY_MESSAGE);
-                return READ_ONLY_VIEW;
-        }
+	@PostMapping("/pets/new")
+	@ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+	public String processCreationForm(Owner owner, @Valid Pet pet, BindingResult result, Model model) {
+		// All write paths are disabled; surface the read-only page instead of persisting
+		// changes.
+		model.addAttribute("readOnlyMessage", ReadOnlyModeAdvice.READ_ONLY_MESSAGE);
+		return READ_ONLY_VIEW;
+	}
 
-        @GetMapping("/pets/{petId}/edit")
-        public String initUpdateForm() {
-                return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
-        }
+	@GetMapping("/pets/{petId}/edit")
+	public String initUpdateForm() {
+		return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
+	}
 
-        @PostMapping("/pets/{petId}/edit")
-        @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
-        public String processUpdateForm(Owner owner, @Valid Pet pet, BindingResult result, Model model) {
-                // All write paths are disabled; surface the read-only page instead of persisting changes.
-                model.addAttribute("readOnlyMessage", ReadOnlyModeAdvice.READ_ONLY_MESSAGE);
-                return READ_ONLY_VIEW;
-        }
+	@PostMapping("/pets/{petId}/edit")
+	@ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+	public String processUpdateForm(Owner owner, @Valid Pet pet, BindingResult result, Model model) {
+		// All write paths are disabled; surface the read-only page instead of persisting
+		// changes.
+		model.addAttribute("readOnlyMessage", ReadOnlyModeAdvice.READ_ONLY_MESSAGE);
+		return READ_ONLY_VIEW;
+	}
 
 }
