@@ -22,15 +22,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 @ControllerAdvice
 public class ReadOnlyModeAdvice {
 
-        public static final String READ_ONLY_MESSAGE =
-                        "The system is currently running in read-only DR mode. Some features are temporarily disabled.";
+	public static final String READ_ONLY_MESSAGE = "The system is currently running in read-only DR mode. Some features are temporarily disabled.";
 
-        @Value("${app.read-only:false}")
-        private boolean appReadOnly;
+	@Value("${app.read-only:false}")
+	private boolean appReadOnly;
 
-        @ModelAttribute("appReadOnly")
-        public boolean appReadOnly() {
-                return this.appReadOnly;
-        }
+	@ModelAttribute("appReadOnly")
+	public boolean appReadOnly() {
+		return this.appReadOnly;
+	}
 
 }
