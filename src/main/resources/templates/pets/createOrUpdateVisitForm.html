@@ -9,6 +9,10 @@
     Visit
   </h2>
 
+  <div class="alert alert-warning" role="alert" th:text="#{readonly.forms.notice}">
+    This application is running in read-only mode. Submissions are disabled.
+  </div>
+
   <b th:text="#{pet}">Pet</b>
   <table class="table table-striped">
     <thead>
@@ -36,7 +40,10 @@
     <div class="form-group">
       <div class="col-sm-offset-2 col-sm-10">
         <input type="hidden" name="petId" th:value="${pet.id}" />
-        <button class="btn btn-primary" type="submit" th:text="#{addVisit}">Add Visit</button>
+        <button class="btn btn-primary" type="submit" th:text="#{addVisit}" th:attr="disabled=${appReadOnly}">Add Visit</button>
+        <p class="form-text text-muted mb-0" th:text="#{readonly.forms.submitDisabled}">
+          Changes cannot be saved while the site is read-only.
+        </p>
       </div>
     </div>
   </form>
